@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/enhanced-button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Crown, Zap, Rocket } from "lucide-react";
-
+import SubscribeButton from '@/components/SubscribeButton';
+<SubscribeButton />
 const plans = [
   {
     name: "Starter",
