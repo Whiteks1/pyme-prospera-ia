@@ -1,6 +1,8 @@
 {
   "functions": {
-    "api/**.ts": { "runtime": "nodejs20.x" }
+    "api/**/*.{js,ts}": {
+      "runtime": "nodejs20.x"
+    }
   },
   "headers": [
     {
