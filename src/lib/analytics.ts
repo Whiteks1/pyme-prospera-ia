@@ -1,50 +1,42 @@
 // src/lib/analytics.ts
 import posthog from "posthog-js";
 
-const POSTHOG_KEY: string | undefined = import.meta.env.VITE_POSTHOG_KEY;
-const POSTHOG_HOST =
-  import.meta.env.VITE_POSTHOG_HOST || "https://us.posthog.com";
-
-
 let initialized = false;
 
-export function initPostHog(): void {
+const PH_KEY = import.meta.env.VITE_POSTHOG_KEY;
+const PH_HOST = import.meta.env.VITE_POSTHOG_HOST || "https://us.i.posthog.com";
+
+export function initAnalytics() {
   if (initialized) return;
-
-  if (!POSTHOG_KEY) {
-    console.warn(
-      "PostHog: falta VITE_POSTHOG_KEY. Configúrala en Vercel → Settings → Environment Variables."
-    );
-    return;
+  if (!PH_KEY) {
+    if (import.meta.env.DEV) {
+      console.warn("[PostHog] desactivado: falta VITE_POSTHOG_KEY");
+    }
+    return; // no inicializar sin token
   }
-
-  posthog.init(POSTHOG_KEY, {
-    api_host: POSTHOG_HOST,
+  posthog.init(PH_KEY, {
+    api_host: PH_HOST,
+    defaults: "2025-05-24", // pageviews por cambios de history para SPA
     autocapture: true,
-    capture_pageview: false, // hacemos pageviews manuales
-    capture_pageleave: true,
   });
-
   initialized = true;
 }
 
-export function identify(userId: string, props?: Record<string, unknown>): void {
-  if (!initialized) return;
-  posthog.identify(userId, props);
+export function track(event: string, props?: Record<string, any>) {
+  if (initialized) posthog.capture(event, props);
 }
 
-export function track(event: string, props?: Record<string, unknown>): void {
-  if (!initialized) return;
-  posthog.capture(event, props);
+export function identify(id: string, props?: Record<string, any>) {
+  if (initialized) posthog.identify(id, props);
 }
 
-export function pageview(props?: Record<string, unknown>): void {
-  if (!initialized) return;
-  posthog.capture("$pageview", props);
+export function pageview(props?: Record<string, any>) {
+  if (initialized) posthog.capture("$pageview", props);
 }
 
-// Opcional: para cerrar sesión / limpiar sesión de usuario
-export function reset(): void {
-  if (!initialized) return;
-  posthog.reset();
+export function reset() {
+  if (initialized) posthog.reset();
 }
+
+// Si vas a usar <PostHogProvider />, reexporta el cliente:
+export { posthog };
