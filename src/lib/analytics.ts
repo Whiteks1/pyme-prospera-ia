@@ -2,8 +2,9 @@
 import posthog from "posthog-js";
 
 const POSTHOG_KEY: string | undefined = import.meta.env.VITE_POSTHOG_KEY;
-const POSTHOG_HOST: string =
-  (import.meta.env.VITE_POSTHOG_HOST as string) ?? "https://us.posthog.com";
+const POSTHOG_HOST =
+  import.meta.env.VITE_POSTHOG_HOST || "https://us.posthog.com";
+
 
 let initialized = false;
 
