@@ -1,5 +1,15 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+// src/main.tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import { initPostHog, pageview } from "./lib/analytics";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Inicializar PostHog y registrar el primer pageview
+initPostHog();
+pageview({ path: location.pathname + location.search });
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
